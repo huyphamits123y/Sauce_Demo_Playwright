@@ -54,6 +54,21 @@ export class InventoryPage extends BasePage {
     await itemContainer.locator('button:has-text("Remove")').click();
   }
 
+  /**
+   * Click vào biểu tượng giỏ hàng để chuyển sang trang cart.html
+   */
+  async goToCart(): Promise<void> {
+    await this.shoppingCartLink.click();
+  }
+
+  /**
+   * Click vào tên sản phẩm để chuyển đến trang chi tiết sản phẩm
+   */
+  async openItemDetails(itemName: string): Promise<void> {
+    const itemContainer = this.getItemContainer(itemName);
+    await itemContainer.locator('[data-test="inventory-item-name"]').click();
+  }
+
   async getCartItemCount(): Promise<number> {
     if (await this.shoppingCartBadge.isVisible()) {
       const countText = await this.shoppingCartBadge.textContent();

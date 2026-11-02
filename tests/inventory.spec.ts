@@ -86,16 +86,19 @@ test.describe('SauceDemo Inventory Tests', () => {
     // Kiểm tra link Twitter (X)
     await expect(inventoryPage.twitterLink).toBeVisible();
     await expect(inventoryPage.twitterLink).toHaveAttribute('href', /.*(x\.com|twitter\.com)\/saucelabs/);
+    console.log('Twitter link href:', await inventoryPage.twitterLink.getAttribute('href'));
     await expect(inventoryPage.twitterLink).toHaveAttribute('target', '_blank');
 
     // Kiểm tra link Facebook
     await expect(inventoryPage.facebookLink).toBeVisible();
     await expect(inventoryPage.facebookLink).toHaveAttribute('href', 'https://www.facebook.com/saucelabs');
+    console.log('Facebook link href:', await inventoryPage.facebookLink.getAttribute('href'));
     await expect(inventoryPage.facebookLink).toHaveAttribute('target', '_blank');
 
     // Kiểm tra link LinkedIn
     await expect(inventoryPage.linkedinLink).toBeVisible();
     await expect(inventoryPage.linkedinLink).toHaveAttribute('href', 'https://www.linkedin.com/company/sauce-labs/');
+    console.log('LinkedIn link href:', await inventoryPage.linkedinLink.getAttribute('href'));
     await expect(inventoryPage.linkedinLink).toHaveAttribute('target', '_blank');
   });
 

@@ -14,9 +14,10 @@ export class ProductDetailsPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.backToProductsButton = page.locator('[data-test="back-to-products"]');
-    this.productName = page.locator('[data-test="inventory-item-name"]');
-    this.productDescription = page.locator('[data-test="inventory-item-desc"]');
-    this.productPrice = page.locator('[data-test="inventory-item-price"]');
+    // Định vị chính xác trong container chi tiết sản phẩm để tránh xung đột với trang danh sách
+    this.productName = page.locator('.inventory_details_container [data-test="inventory-item-name"]');
+    this.productDescription = page.locator('.inventory_details_container [data-test="inventory-item-desc"]');
+    this.productPrice = page.locator('.inventory_details_container [data-test="inventory-item-price"]');
     this.productImage = page.locator('.inventory_details_img');
     this.addToCartButton = page.locator('[data-test="add-to-cart"]');
     this.removeButton = page.locator('[data-test="remove"]');
@@ -51,4 +52,3 @@ export class ProductDetailsPage extends BasePage {
     await this.removeButton.click();
   }
 }
-

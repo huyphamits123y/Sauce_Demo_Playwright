@@ -4,6 +4,8 @@ import { InventoryPage } from '../pages/InventoryPage';
 import { VALID_USER, INVALID_USER, LOCKED_OUT_USER, PERFORMANCE_GLITCH_USER } from '../data/testUsers';
 import { ERROR_MESSAGES } from '../constants/errorMessages';
 
+
+// Không nên Setup các file Test chạy tuần tự, nên để các file test chạy độc lập
 test.describe('SauceDemo Login Tests', () => {
   let loginPage: LoginPage;
 
@@ -63,13 +65,14 @@ test.describe('SauceDemo Login Tests', () => {
   });
 
   test('TC_LOGIN_07: Performance glitch user logs in successfully', async ({ page }) => {
+    test.slow();
     const inventoryPage = new InventoryPage(page);
 
-    // Chờ thời gian tải cho performance glitch user
+    // Chờ thời gian tải cho performance glitch user (tự động tăng timeout cho test chậm)
     await loginPage.login(PERFORMANCE_GLITCH_USER.username, PERFORMANCE_GLITCH_USER.password);
 
     // Assert: Hệ thống tự động chờ (Auto-wait) và load thành công trang inventory
-    await expect(page).toHaveURL(/.*inventory\.html/);
-    await expect(inventoryPage.pageTitle).toHaveText('Products');
+    await expect(page).toHaveURL(/.*inventory\.html/, { timeout: 15000 });
+    await expect(inventoryPage.pageTitle).toHaveText('Products', { timeout: 15000 });
   });
 });

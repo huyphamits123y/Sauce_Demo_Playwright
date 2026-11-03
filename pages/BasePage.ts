@@ -52,6 +52,13 @@ export abstract class BasePage {
     await this.openMenu();
     await this.allItemsLink.click();
   }
+  async clickAbout(): Promise<string> {
+    await this.openMenu();
+    await this.aboutLink.click();
+    await this.page.waitForLoadState('load');
+    console.log('Current URL after clicking About link:', this.page.url());
+    return this.page.url();
+  }
 
   /**
    * Đăng xuất qua sidebar menu

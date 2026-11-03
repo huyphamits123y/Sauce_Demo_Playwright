@@ -13,7 +13,7 @@ export class CartPage extends BasePage {
     super(page);
     this.pageTitle = page.locator('[data-test="title"]');
     this.cartList = page.locator('[data-test="cart-list"]');
-    this.cartItems = page.locator('[data-test="inventory-item"]');
+    this.cartItems = page.locator('[data-test="cart-list"] [data-test="inventory-item"]');
     this.continueShoppingButton = page.locator('[data-test="continue-shopping"]');
     this.checkoutButton = page.locator('[data-test="checkout"]');
     this.shoppingCartBadge = page.locator('[data-test="shopping-cart-badge"]');

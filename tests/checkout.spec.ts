@@ -27,6 +27,7 @@ test.describe('SauceDemo Payment & Checkout Tests', () => {
     // Đăng nhập trước mỗi bài test
     await loginPage.goto('/');
     await loginPage.login(VALID_USER.username, VALID_USER.password);
+    await expect(page).toHaveURL(/.*inventory\.html/);
   });
 
   /* =========================================================================
@@ -229,7 +230,8 @@ test.describe('SauceDemo Payment & Checkout Tests', () => {
   test('TC_CHECKOUT_09: Checkout with empty cart proceeds with $0.00 total', async ({ page }) => {
     // Vào thẳng giỏ hàng khi chưa chọn sản phẩm nào
     await inventoryPage.goToCart();
-    expect(await cartPage.getCartItemsCount()).toBe(0);
+    await expect(page).toHaveURL(/.*cart\.html/);
+    await expect(cartPage.cartItems).toHaveCount(0);
 
     // Tiến hành Checkout
     await cartPage.checkout();

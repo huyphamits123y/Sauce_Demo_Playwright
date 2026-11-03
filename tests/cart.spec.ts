@@ -20,6 +20,7 @@ test.describe('SauceDemo Cart Tests', () => {
     // Đăng nhập tài khoản hợp lệ trước mỗi bài test
     await loginPage.goto('/');
     await loginPage.login(VALID_USER.username, VALID_USER.password);
+    await expect(page).toHaveURL(/.*inventory\.html/);
   });
 
   /* =========================================================================
@@ -36,7 +37,7 @@ test.describe('SauceDemo Cart Tests', () => {
     await expect(cartPage.pageTitle).toHaveText('Your Cart');
 
     // Assert: Danh sách sản phẩm trong giỏ trống
-    expect(await cartPage.getCartItemsCount()).toBe(0);
+    await expect(cartPage.cartItems).toHaveCount(0);
 
     // Assert: Badge giỏ hàng không hiển thị
     await expect(cartPage.shoppingCartBadge).toBeHidden();
@@ -62,9 +63,8 @@ test.describe('SauceDemo Cart Tests', () => {
     await expect(page).toHaveURL(/.*cart\.html/);
 
     // Assert: Giỏ hàng hiển thị đúng 2 sản phẩm
-    expect(await cartPage.getCartItemsCount()).toBe(2);
-    const itemNames = await cartPage.getCartItemNames();
-    expect(itemNames).toEqual([item1, item2]);
+    await expect(cartPage.cartItems).toHaveCount(2);
+    await expect(cartPage.cartItems.locator('[data-test="inventory-item-name"]')).toHaveText([item1, item2]);
 
     // Assert: Số lượng (Quantity) và Giá tiền của từng sản phẩm
     expect(await cartPage.getItemQuantity(item1)).toBe('1');
@@ -98,7 +98,7 @@ test.describe('SauceDemo Cart Tests', () => {
     await expect(cartPage.getItemContainer(item2)).toBeVisible();
 
     // Assert: Tổng số lượng còn lại là 1 và badge cập nhật thành '1'
-    expect(await cartPage.getCartItemsCount()).toBe(1);
+    await expect(cartPage.cartItems).toHaveCount(1);
     await expect(cartPage.shoppingCartBadge).toHaveText('1');
   });
 
@@ -115,7 +115,7 @@ test.describe('SauceDemo Cart Tests', () => {
     await cartPage.removeItem(item);
 
     // Assert: Giỏ hàng rỗng hoàn toàn và badge biến mất
-    expect(await cartPage.getCartItemsCount()).toBe(0);
+    await expect(cartPage.cartItems).toHaveCount(0);
     await expect(cartPage.shoppingCartBadge).toBeHidden();
   });
 

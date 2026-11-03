@@ -17,6 +17,7 @@ test.describe('SauceDemo Product Details Tests', () => {
     // Đăng nhập trước mỗi bài test
     await loginPage.goto('/');
     await loginPage.login(VALID_USER.username, VALID_USER.password);
+    await expect(page).toHaveURL(/.*inventory\.html/);
   });
 
   /* =========================================================================

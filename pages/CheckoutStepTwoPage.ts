@@ -15,7 +15,7 @@ export class CheckoutStepTwoPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.pageTitle = page.locator('[data-test="title"]');
-    this.cartItems = page.locator('[data-test="inventory-item"]');
+    this.cartItems = page.locator('[data-test="cart-list"] [data-test="inventory-item"]');
     this.paymentInfo = page.locator('[data-test="payment-info-value"]');
     this.shippingInfo = page.locator('[data-test="shipping-info-value"]');
     this.subtotalLabel = page.locator('[data-test="subtotal-label"]');

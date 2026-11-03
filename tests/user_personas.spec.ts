@@ -62,12 +62,13 @@ test.describe('SauceDemo Special User Personas Tests', () => {
    * 3. PERFORMANCE_GLITCH_USER: ĐỘ TRỄ MẠNG ĐƯỢC XỬ LÝ ỔN ĐỊNH
    * ========================================================================= */
   test('TC_PERSONA_03: performance_glitch_user handles slow page loads gracefully', async ({ page }) => {
+    test.slow();
     // Đăng nhập với tài khoản có độ trễ cao
     await loginPage.login(PERFORMANCE_GLITCH_USER.username, PERFORMANCE_GLITCH_USER.password);
 
     // Assert: Playwright auto-wait tự động đợi đến khi tải xong mà không timeout
-    await expect(page).toHaveURL(/.*inventory\.html/);
-    await expect(inventoryPage.pageTitle).toHaveText('Products');
+    await expect(page).toHaveURL(/.*inventory\.html/, { timeout: 15000 });
+    await expect(inventoryPage.pageTitle).toHaveText('Products', { timeout: 15000 });
     expect(await inventoryPage.getAllItemNames()).toHaveLength(6);
   });
 

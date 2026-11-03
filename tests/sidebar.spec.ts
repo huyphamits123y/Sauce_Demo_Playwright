@@ -17,6 +17,7 @@ test.describe('SauceDemo Sidebar Menu Tests', () => {
     // Đăng nhập trước mỗi bài test
     await loginPage.goto('/');
     await loginPage.login(VALID_USER.username, VALID_USER.password);
+    await expect(page).toHaveURL(/.*inventory\.html/);
   });
 
   /* =========================================================================
@@ -60,10 +61,15 @@ test.describe('SauceDemo Sidebar Menu Tests', () => {
    * 3. LINK "ABOUT" DẪN ĐẾN TRANG CHỦ SAUCE LABS
    * ========================================================================= */
   test('TC_SIDEBAR_03: "About" link points to official Sauce Labs website', async () => {
-    await inventoryPage.openMenu();
+
+    await expect(inventoryPage.clickAbout()).resolves.toEqual('https://saucelabs.com/');
+
+
+    // await inventoryPage.openMenu();
 
     // Assert: Link About có đường dẫn href chính xác tới https://saucelabs.com/
-    await expect(inventoryPage.aboutLink).toHaveAttribute('href', 'https://saucelabs.com/');
+    // await expect(inventoryPage.aboutLink).toHaveAttribute('href', 'https://saucelabs.com/');
+
   });
 
   /* =========================================================================

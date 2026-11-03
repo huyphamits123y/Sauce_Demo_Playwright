@@ -11,6 +11,7 @@ test.describe('SauceDemo Inventory Tests', () => {
     loginPage = new LoginPage(page);
     await loginPage.goto('/');
     await loginPage.login(VALID_USER.username, VALID_USER.password);
+    await expect(page).toHaveURL(/.*inventory\.html/);
     inventoryPage = new InventoryPage(page);
   });
 
@@ -100,9 +101,9 @@ test.describe('SauceDemo Inventory Tests', () => {
     const productName = 'Sauce Labs Backpack';
     await inventoryPage.openItemDetailsByImage(productName);
 
-    // Assert: Điều hướng tới trang chi tiết với id=4
+    // Assert: Điều hướng tới trang chi tiết với id=4 và đúng tên sản phẩm
     await expect(page).toHaveURL(/.*inventory-item\.html\?id=4/);
-    await expect(page.locator('[data-test="inventory-item-name"]')).toHaveText(productName);
+    await expect(page.locator('.inventory_details_container [data-test="inventory-item-name"]')).toHaveText(productName);
   });
 
   /* =========================================================================

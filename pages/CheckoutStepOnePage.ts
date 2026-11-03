@@ -9,6 +9,7 @@ export class CheckoutStepOnePage extends BasePage {
   readonly continueButton: Locator;
   readonly cancelButton: Locator;
   readonly errorMessage: Locator;
+  readonly errorButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -19,6 +20,7 @@ export class CheckoutStepOnePage extends BasePage {
     this.continueButton = page.locator('[data-test="continue"]');
     this.cancelButton = page.locator('[data-test="cancel"]');
     this.errorMessage = page.locator('[data-test="error"]');
+    this.errorButton = page.locator('.error-button, [data-test="error-button"]');
   }
 
   async open(): Promise<void> {
@@ -45,8 +47,11 @@ export class CheckoutStepOnePage extends BasePage {
     await this.cancelButton.click();
   }
 
+  async dismissError(): Promise<void> {
+    await this.errorButton.click();
+  }
+
   async getErrorMessage(): Promise<string> {
     return (await this.errorMessage.textContent()) || '';
   }
 }
-

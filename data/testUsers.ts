@@ -18,3 +18,17 @@ export const LOCKED_OUT_USER: UserCredentials = {
   password: 'secret_sauce'
 };
 
+export const PROBLEM_USER: UserCredentials = {
+  username: 'problem_user',
+  password: 'secret_sauce'
+};
+
+export const PERFORMANCE_GLITCH_USER: UserCredentials = {
+  username: 'performance_glitch_user',
+  password: 'secret_sauce'
+};
+
+export const ERROR_USER: UserCredentials = {
+  username: 'error_user',
+  password: 'secret_sauce'
+};

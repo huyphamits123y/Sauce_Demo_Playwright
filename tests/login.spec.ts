@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
-import { VALID_USER, INVALID_USER, LOCKED_OUT_USER } from '../data/testUsers';
+import { VALID_USER, INVALID_USER, LOCKED_OUT_USER, PERFORMANCE_GLITCH_USER } from '../data/testUsers';
 import { ERROR_MESSAGES } from '../constants/errorMessages';
 
 test.describe('SauceDemo Login Tests', () => {
@@ -49,5 +49,27 @@ test.describe('SauceDemo Login Tests', () => {
     await expect(loginPage.errorMessage).toBeVisible();
     await expect(loginPage.errorMessage).toContainText(ERROR_MESSAGES.LOCKED_OUT_USER);
   });
-});
 
+  test('TC_LOGIN_06: Dismiss error banner by clicking error close button', async () => {
+    // Kích hoạt lỗi đăng nhập
+    await loginPage.login('', '');
+    await expect(loginPage.errorMessage).toBeVisible();
+
+    // Bấm nút X đóng lỗi
+    await loginPage.dismissError();
+
+    // Assert: Banner lỗi bị ẩn đi
+    await expect(loginPage.errorMessage).toBeHidden();
+  });
+
+  test('TC_LOGIN_07: Performance glitch user logs in successfully', async ({ page }) => {
+    const inventoryPage = new InventoryPage(page);
+
+    // Chờ thời gian tải cho performance glitch user
+    await loginPage.login(PERFORMANCE_GLITCH_USER.username, PERFORMANCE_GLITCH_USER.password);
+
+    // Assert: Hệ thống tự động chờ (Auto-wait) và load thành công trang inventory
+    await expect(page).toHaveURL(/.*inventory\.html/);
+    await expect(inventoryPage.pageTitle).toHaveText('Products');
+  });
+});

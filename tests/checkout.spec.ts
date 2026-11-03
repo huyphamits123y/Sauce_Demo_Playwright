@@ -24,7 +24,7 @@ test.describe('SauceDemo Payment & Checkout Tests', () => {
     stepTwoPage = new CheckoutStepTwoPage(page);
     completePage = new CheckoutCompletePage(page);
 
-    // Đăng nhập và thêm 1 sản phẩm mặc định vào giỏ hàng
+    // Đăng nhập trước mỗi bài test
     await loginPage.goto('/');
     await loginPage.login(VALID_USER.username, VALID_USER.password);
   });
@@ -206,5 +206,45 @@ test.describe('SauceDemo Payment & Checkout Tests', () => {
     await expect(page).toHaveURL(/.*inventory\.html/);
     await expect(inventoryPage.shoppingCartBadge).toBeHidden();
   });
-});
 
+  /* =========================================================================
+   * 8. ĐÓNG BANNER LỖI TẠI CHECKOUT STEP ONE
+   * ========================================================================= */
+  test('TC_CHECKOUT_08: Dismiss validation error banner on Checkout Step One', async () => {
+    await inventoryPage.goToCart();
+    await cartPage.checkout();
+
+    // Kích hoạt lỗi
+    await stepOnePage.continue();
+    await expect(stepOnePage.errorMessage).toBeVisible();
+
+    // Click nút X đóng lỗi
+    await stepOnePage.dismissError();
+    await expect(stepOnePage.errorMessage).toBeHidden();
+  });
+
+  /* =========================================================================
+   * 9. EDGE CASE: CHECKOUT VỚI GIỎ HÀNG RỖNG
+   * ========================================================================= */
+  test('TC_CHECKOUT_09: Checkout with empty cart proceeds with $0.00 total', async ({ page }) => {
+    // Vào thẳng giỏ hàng khi chưa chọn sản phẩm nào
+    await inventoryPage.goToCart();
+    expect(await cartPage.getCartItemsCount()).toBe(0);
+
+    // Tiến hành Checkout
+    await cartPage.checkout();
+    await stepOnePage.fillInformation('Jane', 'Doe', '10001');
+    await stepOnePage.continue();
+
+    // Tại Step Two: Xác nhận $0.00
+    await expect(page).toHaveURL(/.*checkout-step-two\.html/);
+    expect(await stepTwoPage.getSubtotalAmount()).toBe(0);
+    expect(await stepTwoPage.getTaxAmount()).toBe(0);
+    expect(await stepTwoPage.getTotalAmount()).toBe(0);
+
+    // Bấm Finish hoàn tất
+    await stepTwoPage.finish();
+    await expect(page).toHaveURL(/.*checkout-complete\.html/);
+    await expect(completePage.completeHeader).toHaveText('Thank you for your order!');
+  });
+});

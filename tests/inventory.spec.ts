@@ -48,6 +48,20 @@ test.describe('SauceDemo Inventory Tests', () => {
     await expect(productItem.locator('button')).toHaveText('Add to cart');
   });
 
+  test('TC_CART_03: Add multiple products sequentially and verify incremental cart badge', async () => {
+    // 1. Thêm sản phẩm 1 -> Badge = 1
+    await inventoryPage.addItemToCart('Sauce Labs Backpack');
+    await expect(inventoryPage.shoppingCartBadge).toHaveText('1');
+
+    // 2. Thêm sản phẩm 2 -> Badge = 2
+    await inventoryPage.addItemToCart('Sauce Labs Bike Light');
+    await expect(inventoryPage.shoppingCartBadge).toHaveText('2');
+
+    // 3. Thêm sản phẩm 3 -> Badge = 3
+    await inventoryPage.addItemToCart('Sauce Labs Bolt T-Shirt');
+    await expect(inventoryPage.shoppingCartBadge).toHaveText('3');
+  });
+
   /* =========================================================================
    * 2. SORT / FILTER TESTS (Lọc và sắp xếp sản phẩm)
    * ========================================================================= */
@@ -80,40 +94,50 @@ test.describe('SauceDemo Inventory Tests', () => {
   });
 
   /* =========================================================================
-   * 3. SOCIAL MEDIA LINKS TESTS (Các link mạng xã hội ở footer)
+   * 3. NAVIGATION VIA IMAGE (Click ảnh sản phẩm vào trang chi tiết)
+   * ========================================================================= */
+  test('TC_NAV_01: Click product image navigates to product details page', async ({ page }) => {
+    const productName = 'Sauce Labs Backpack';
+    await inventoryPage.openItemDetailsByImage(productName);
+
+    // Assert: Điều hướng tới trang chi tiết với id=4
+    await expect(page).toHaveURL(/.*inventory-item\.html\?id=4/);
+    await expect(page.locator('[data-test="inventory-item-name"]')).toHaveText(productName);
+  });
+
+  /* =========================================================================
+   * 4. SOCIAL MEDIA & FOOTER TESTS
    * ========================================================================= */
   test('TC_SOCIAL_01: Verify social media links have correct URLs and target="_blank"', async () => {
     // Kiểm tra link Twitter (X)
     await expect(inventoryPage.twitterLink).toBeVisible();
     await expect(inventoryPage.twitterLink).toHaveAttribute('href', /.*(x\.com|twitter\.com)\/saucelabs/);
-    console.log('Twitter link href:', await inventoryPage.twitterLink.getAttribute('href'));
     await expect(inventoryPage.twitterLink).toHaveAttribute('target', '_blank');
 
     // Kiểm tra link Facebook
     await expect(inventoryPage.facebookLink).toBeVisible();
     await expect(inventoryPage.facebookLink).toHaveAttribute('href', 'https://www.facebook.com/saucelabs');
-    console.log('Facebook link href:', await inventoryPage.facebookLink.getAttribute('href'));
     await expect(inventoryPage.facebookLink).toHaveAttribute('target', '_blank');
 
     // Kiểm tra link LinkedIn
     await expect(inventoryPage.linkedinLink).toBeVisible();
     await expect(inventoryPage.linkedinLink).toHaveAttribute('href', 'https://www.linkedin.com/company/sauce-labs/');
-    console.log('LinkedIn link href:', await inventoryPage.linkedinLink.getAttribute('href'));
     await expect(inventoryPage.linkedinLink).toHaveAttribute('target', '_blank');
   });
 
   test('TC_SOCIAL_02: Click social media link and verify new tab opens with correct URL', async ({ context }) => {
-    // Lắng nghe sự kiện mở tab mới khi click nút mạng xã hội (Facebook)
     const [newPage] = await Promise.all([
       context.waitForEvent('page'),
       inventoryPage.facebookLink.click(),
     ]);
 
-    // Chờ tab mới bắt đầu tải và kiểm tra URL của tab mới
     await newPage.waitForLoadState('domcontentloaded');
     expect(newPage.url()).toContain('facebook.com/saucelabs');
-
-    // Đóng tab mới sau khi kiểm tra xong
     await newPage.close();
+  });
+
+  test('TC_FOOTER_01: Verify footer copyright text', async () => {
+    await expect(inventoryPage.footerCopy).toBeVisible();
+    await expect(inventoryPage.footerCopy).toContainText('Sauce Labs. All Rights Reserved.');
   });
 });

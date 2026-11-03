@@ -6,6 +6,7 @@ export class LoginPage extends BasePage {
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
   readonly errorMessage: Locator;
+  readonly errorButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -13,6 +14,7 @@ export class LoginPage extends BasePage {
     this.passwordInput = page.locator('[data-test="password"]');
     this.loginButton = page.locator('[data-test="login-button"]');
     this.errorMessage = page.locator('[data-test="error"]');
+    this.errorButton = page.locator('.error-button, [data-test="error-button"]');
   }
 
   async login(username?: string, password?: string) {
@@ -23,6 +25,10 @@ export class LoginPage extends BasePage {
       await this.passwordInput.fill(password);
     }
     await this.loginButton.click();
+  }
+
+  async dismissError(): Promise<void> {
+    await this.errorButton.click();
   }
 
   async getErrorMessageText(): Promise<string> {

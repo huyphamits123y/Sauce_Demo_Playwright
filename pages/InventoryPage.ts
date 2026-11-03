@@ -13,11 +13,13 @@ export class InventoryPage extends BasePage {
   readonly sortDropdown: Locator;
   readonly itemNames: Locator;
   readonly itemPrices: Locator;
+  readonly itemImages: Locator;
 
-  // Locators cho các link mạng xã hội ở footer
+  // Locators cho các link mạng xã hội ở footer & bản quyền
   readonly twitterLink: Locator;
   readonly facebookLink: Locator;
   readonly linkedinLink: Locator;
+  readonly footerCopy: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -30,11 +32,13 @@ export class InventoryPage extends BasePage {
     this.sortDropdown = page.locator('[data-test="product-sort-container"]');
     this.itemNames = page.locator('[data-test="inventory-item-name"]');
     this.itemPrices = page.locator('[data-test="inventory-item-price"]');
+    this.itemImages = page.locator('.inventory_item_img img');
 
-    // Khởi tạo locator cho Social Media (SauceDemo mới đổi Twitter sang X)
+    // Khởi tạo locator cho Social Media & Footer
     this.twitterLink = page.locator('[data-test="social-twitter"], [data-test="social-x"]');
     this.facebookLink = page.locator('[data-test="social-facebook"]');
     this.linkedinLink = page.locator('[data-test="social-linkedin"]');
+    this.footerCopy = page.locator('[data-test="footer-copy"]');
   }
 
   /**
@@ -69,6 +73,14 @@ export class InventoryPage extends BasePage {
     await itemContainer.locator('[data-test="inventory-item-name"]').click();
   }
 
+  /**
+   * Click vào ảnh sản phẩm để chuyển đến trang chi tiết sản phẩm
+   */
+  async openItemDetailsByImage(itemName: string): Promise<void> {
+    const itemContainer = this.getItemContainer(itemName);
+    await itemContainer.locator('.inventory_item_img a').click();
+  }
+
   async getCartItemCount(): Promise<number> {
     if (await this.shoppingCartBadge.isVisible()) {
       const countText = await this.shoppingCartBadge.textContent();
@@ -101,5 +113,12 @@ export class InventoryPage extends BasePage {
   async getAllItemPrices(): Promise<number[]> {
     const priceTexts = await this.itemPrices.allTextContents();
     return priceTexts.map(price => parseFloat(price.replace('$', '')));
+  }
+
+  /**
+   * Lấy danh sách đường dẫn src của tất cả hình ảnh sản phẩm
+   */
+  async getAllItemImageSources(): Promise<string[]> {
+    return await this.itemImages.evaluateAll(imgs => (imgs as HTMLImageElement[]).map(img => img.src));
   }
 }

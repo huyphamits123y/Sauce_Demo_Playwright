@@ -51,9 +51,23 @@ test.describe('SauceDemo Product Details Tests', () => {
   });
 
   /* =========================================================================
-   * 2. KIỂM TRA NÚT BACK TO PRODUCTS
+   * 2. KIỂM TRA THÔNG TIN CHI TIẾT SẢN PHẨM (ID = 4)
    * ========================================================================= */
-  test('TC_PRODUCT_02: Click "Back to products" button returns to inventory page', async ({ page }) => {
+  test('TC_PRODUCT_02: Verify product details display correctly for item id=4 (Sauce Labs Backpack)', async ({ page }) => {
+    await productDetailsPage.openById(4);
+
+    await expect(page).toHaveURL(/.*inventory-item\.html\?id=4/);
+    await expect(productDetailsPage.productName).toHaveText('Sauce Labs Backpack');
+    await expect(productDetailsPage.productPrice).toHaveText('$29.99');
+    await expect(productDetailsPage.productImage).toBeVisible();
+    await expect(productDetailsPage.productImage).toHaveAttribute('src', /.*sauce-backpack.*/);
+    await expect(productDetailsPage.addToCartButton).toBeVisible();
+  });
+
+  /* =========================================================================
+   * 3. KIỂM TRA NÚT BACK TO PRODUCTS
+   * ========================================================================= */
+  test('TC_PRODUCT_03: Click "Back to products" button returns to inventory page', async ({ page }) => {
     // Mở trang chi tiết sản phẩm id=0
     await productDetailsPage.openById(0);
 
@@ -67,9 +81,9 @@ test.describe('SauceDemo Product Details Tests', () => {
   });
 
   /* =========================================================================
-   * 3. KIỂM TRA THÊM VÀ XÓA SẢN PHẨM TRONG GIỎ HÀNG TỪ TRANG CHI TIẾT
+   * 4. KIỂM TRA THÊM VÀ XÓA SẢN PHẨM TRONG GIỎ HÀNG TỪ TRANG CHI TIẾT
    * ========================================================================= */
-  test('TC_PRODUCT_03: Add and remove product to/from cart on details page', async () => {
+  test('TC_PRODUCT_04: Add and remove product to/from cart on details page', async () => {
     await productDetailsPage.openById(0);
 
     // 1. Thêm vào giỏ hàng
@@ -86,9 +100,9 @@ test.describe('SauceDemo Product Details Tests', () => {
   });
 
   /* =========================================================================
-   * 4. ĐIỀU HƯỚNG TỪ DANH SÁCH SẢN PHẨM VÀO CHI TIẾT
+   * 5. ĐIỀU HƯỚNG TỪ DANH SÁCH SẢN PHẨM VÀO CHI TIẾT
    * ========================================================================= */
-  test('TC_PRODUCT_04: Navigate to product details by clicking item name from inventory page', async ({ page }) => {
+  test('TC_PRODUCT_05: Navigate to product details by clicking item name from inventory page', async ({ page }) => {
     // Từ trang inventory, click vào tên sản phẩm
     await inventoryPage.openItemDetails('Sauce Labs Bike Light');
 
@@ -102,9 +116,9 @@ test.describe('SauceDemo Product Details Tests', () => {
   });
 
   /* =========================================================================
-   * 5. ĐỒNG BỘ TRẠNG THÁI GIỎ HÀNG KHI ĐIỀU HƯỚNG QUA LẠI
+   * 6. ĐỒNG BỘ TRẠNG THÁI GIỎ HÀNG KHI ĐIỀU HƯỚNG QUA LẠI
    * ========================================================================= */
-  test('TC_PRODUCT_05: Cart status is preserved when navigating back and forth', async () => {
+  test('TC_PRODUCT_06: Cart status is preserved when navigating back and forth', async () => {
     // Thêm sản phẩm vào giỏ tại trang chi tiết
     await productDetailsPage.openById(0);
     await productDetailsPage.addToCart();
@@ -126,4 +140,3 @@ test.describe('SauceDemo Product Details Tests', () => {
     await expect(productDetailsPage.shoppingCartBadge).toBeHidden();
   });
 });
-
